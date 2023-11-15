@@ -1,46 +1,28 @@
 package com.hobbymatch.application.views.login;
 
-import com.hobbymatch.application.security.AuthenticatedUser;
-import com.vaadin.flow.component.login.LoginI18n;
-import com.vaadin.flow.component.login.LoginOverlay;
-import com.vaadin.flow.router.BeforeEnterEvent;
-import com.vaadin.flow.router.BeforeEnterObserver;
+import com.hobbymatch.application.views.MainLayout;
+import com.vaadin.flow.component.Composite;
+import com.vaadin.flow.component.dependency.Uses;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.login.LoginForm;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.router.internal.RouteUtil;
-import com.vaadin.flow.server.VaadinService;
+import com.vaadin.flow.router.RouteAlias;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 
+@PageTitle("Log In")
+@Route(value = "log-in", layout = MainLayout.class)
+@RouteAlias(value = "", layout = MainLayout.class)
 @AnonymousAllowed
-@PageTitle("Login")
-@Route(value = "login")
-public class LoginView extends LoginOverlay implements BeforeEnterObserver {
+@Uses(Icon.class)
+public class LogInView extends Composite<VerticalLayout> {
 
-    private final AuthenticatedUser authenticatedUser;
-
-    public LoginView(AuthenticatedUser authenticatedUser) {
-        this.authenticatedUser = authenticatedUser;
-        setAction(RouteUtil.getRoutePath(VaadinService.getCurrent().getContext(), getClass()));
-
-        LoginI18n i18n = LoginI18n.createDefault();
-        i18n.setHeader(new LoginI18n.Header());
-        i18n.getHeader().setTitle("hobby-match-frontend");
-        i18n.getHeader().setDescription("Login using user/user or admin/admin");
-        i18n.setAdditionalInformation(null);
-        setI18n(i18n);
-
-        setForgotPasswordButtonVisible(false);
-        setOpened(true);
-    }
-
-    @Override
-    public void beforeEnter(BeforeEnterEvent event) {
-        if (authenticatedUser.get().isPresent()) {
-            // Already logged in
-            setOpened(false);
-            event.forwardTo("");
-        }
-
-        setError(event.getLocation().getQueryParameters().getParameters().containsKey("error"));
+    public LogInView() {
+        LoginForm loginForm = new LoginForm();
+        getContent().setWidth("100%");
+        getContent().getStyle().set("flex-grow", "1");
+        loginForm.setWidth("100%");
+        getContent().add(loginForm);
     }
 }
